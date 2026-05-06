@@ -22,10 +22,10 @@ df2.index.names = ['Ind2']
 
 df_merge = df1.merge(df2, left_index=True, right_index=True, how='left')
 
-col3 = df1.iloc[:, 2].astype(int)
+col3 = df1.iloc[:, 2].str.replace('C', '').astype(int)
 prod_unique = np.prod(col3.unique())
 
-agg_res = df1.iloc[:, 2].astype(int).agg(['sum', 'count'])
+agg_res = col3.agg(['sum', 'count'])
 
 df = pd.DataFrame({
     'Вид транзакции': ['Credit', 'Debit', 'Credit', 'Debit', 'Credit', 'Debit'],
@@ -38,7 +38,7 @@ pivot = pd.pivot_table(df, values='Сумма', index='Вид транзакци
 df = pd.DataFrame({
     'Специальность': ['Терапевт', 'Терапевт', 'Хирург', 'Хирург'] * 6,
     'Врач': ['Иванов', 'Петров', 'Сидоров'] * 8,
-    'Диагноз': (['Простуда', 'Простуда', 'Простуда', 'Ушиб', 'Ушиб', 'Простуда'] * 4),
+    'Диагноз': ['Простуда', 'Простуда', 'Простуда', 'Ушиб', 'Ушиб', 'Простуда'] * 4,
     'Дозировка': np.round(np.random.random(24), 2),
     'Продолжительность': np.random.randint(1, 6, 24)
 })
