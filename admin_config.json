@@ -1,1 +1,54 @@
-94246ce346bbe6fb3db96c8176e76268a8642be5842ee76ba6b762253504c385
+import pandas as pd
+import numpy as np
+
+df1 = pd.DataFrame(np.random.randint(1, 100, (6, 3)))
+df2 = pd.DataFrame(np.random.randint(1, 100, (9, 4)))
+
+df_concat = pd.concat([df1, df2], axis=1)
+
+df1 = pd.DataFrame({'A1': ['43', '3', '80', '5'],
+                    'B1': ['B0', 'B1', 'B5', 'B3'],
+                    'C1': ['C4', 'C5', 'C6', 'C7'],
+                    'D1': ['D4', 'D5', 'D6', 'D7']},
+                   index=[10, 20, 30, 40])
+df1.index.names = ['Ind1']
+
+df2 = pd.DataFrame({'A': ['5', '87', '42', '43'],
+                    'B': ['B0', 'B1', 'B2', 'B3'],
+                    'C': ['C0', 'C1', 'C2', 'C3'],
+                    'D': ['D0', 'D1', 'D2', 'D3']},
+                   index=[10, 20, 30, 50])
+df2.index.names = ['Ind2']
+
+df_merge = df1.merge(df2, left_index=True, right_index=True, how='left')
+
+col3 = df1.iloc[:, 2].astype(int)
+prod_unique = np.prod(col3.unique())
+
+agg_res = df1.iloc[:, 2].astype(int).agg(['sum', 'count'])
+
+df = pd.DataFrame({
+    'Вид транзакции': ['Credit', 'Debit', 'Credit', 'Debit', 'Credit', 'Debit'],
+    'Сумма': [1000, 2000, 1500, 2500, 2000, 3000]
+})
+
+group_res = df.groupby('Вид транзакции')['Сумма'].agg(['count', 'mean'])
+pivot = pd.pivot_table(df, values='Сумма', index='Вид транзакции', aggfunc='sum')
+
+df = pd.DataFrame({
+    'Специальность': ['Терапевт', 'Терапевт', 'Хирург', 'Хирург'] * 6,
+    'Врач': ['Иванов', 'Петров', 'Сидоров'] * 8,
+    'Диагноз': (['Простуда', 'Простуда', 'Простуда', 'Ушиб', 'Ушиб', 'Простуда'] * 4),
+    'Дозировка': np.round(np.random.random(24), 2),
+    'Продолжительность': np.random.randint(1, 6, 24)
+})
+
+ct = pd.crosstab(df['Врач'], df['Диагноз'])
+
+print(df_concat)
+print(df_merge)
+print(prod_unique)
+print(agg_res)
+print(group_res)
+print(pivot)
+print(ct)
