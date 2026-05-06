@@ -1,41 +1,75 @@
 import pandas as pd
 import numpy as np
 
-df1 = pd.DataFrame(np.random.randint(1, 100, (6, 3)))
-df2 = pd.DataFrame(np.random.randint(1, 100, (9, 4)))
+# ======================== Задание 1 ========================
+df_1 = pd.DataFrame(np.random.randint(1, 50, size=(6, 3)), columns=['col1', 'col2', 'col3'])
+df_2 = pd.DataFrame(np.random.randint(1, 50, size=(9, 4)), columns=['col1', 'col2', 'col3', 'col4'])
 
-df_concat = pd.concat([df1, df2], axis=1)
+print("df_1:")
+print(df_1)
+print("\ndf_2:")
+print(df_2)
 
-df1 = pd.DataFrame({'A1': ['43', '3', '80', '5'],
-                    'B1': ['B0', 'B1', 'B5', 'B3'],
-                    'C1': ['C4', 'C5', 'C6', 'C7'],
-                    'D1': ['D4', 'D5', 'D6', 'D7']},
-                   index=[10, 20, 30, 40])
+# ======================== Задание 2 ========================
+df_concat = pd.concat([df_1, df_2], axis=1)
+print("\nОбъединение по столбцам (concat):")
+print(df_concat)
+
+# ======================== Задание 3 ========================
+df1 = pd.DataFrame(
+    {'A1': ['43', '3', '80', '5'],
+     'B1': ['B0', 'B1', 'B5', 'B3'],
+     'C1': ['C4', 'C5', 'C6', 'C7'],
+     'D1': ['D4', 'D5', 'D6', 'D7']},
+    index=[10, 20, 30, 40]
+)
 df1.index.names = ['Ind1']
 
-df2 = pd.DataFrame({'A': ['5', '87', '42', '43'],
-                    'B': ['B0', 'B1', 'B2', 'B3'],
-                    'C': ['C0', 'C1', 'C2', 'C3'],
-                    'D': ['D0', 'D1', 'D2', 'D3']},
-                   index=[10, 20, 30, 50])
+df2 = pd.DataFrame(
+    {'A': ['5', '87', '42', '43'],
+     'B': ['B0', 'B1', 'B2', 'B3'],
+     'C': ['C0', 'C1', 'C2', 'C3'],
+     'D': ['D0', 'D1', 'D2', 'D3']},
+    index=[10, 20, 30, 50]
+)
 df2.index.names = ['Ind2']
 
-df_merge = df1.merge(df2, left_index=True, right_index=True, how='left')
+df_merged = df1.merge(df2, left_index=True, right_index=True, how='left')
+print("\nMerge (left join по индексам):")
+print(df_merged)
 
-col3 = df1.iloc[:, 2].str.replace('C', '').astype(int)
-prod_unique = np.prod(col3.unique())
+# ======================== Задание 4 ========================
+unique_product = np.prod(df_1['col1'].unique())
+print(f"\nПроизведение уникальных элементов в col1 (df_1): {unique_product}")
 
-agg_res = col3.agg(['sum', 'count'])
+# ======================== Задание 5 ========================
+result_agg = df_1['col3'].agg(['sum', 'count'])
+print("\nСумма и количество элементов в col3 (df_1):")
+print(result_agg)
 
-df = pd.DataFrame({
+# ======================== Задание 6 ========================
+df_trans = pd.DataFrame({
     'Вид транзакции': ['Credit', 'Debit', 'Credit', 'Debit', 'Credit', 'Debit'],
     'Сумма': [1000, 2000, 1500, 2500, 2000, 3000]
 })
 
-group_res = df.groupby('Вид транзакции')['Сумма'].agg(['count', 'mean'])
-pivot = pd.pivot_table(df, values='Сумма', index='Вид транзакции', aggfunc='sum')
+print("\nИсходная таблица транзакций:")
+print(df_trans)
 
-df = pd.DataFrame({
+stats = df_trans.groupby('Вид транзакции')['Сумма'].agg(
+    Количество='count',
+    Средняя_сумма='mean'
+)
+print("\nКоличество и средняя сумма по видам транзакций:")
+print(stats)
+
+pivot = df_trans.pivot_table(values='Сумма', index='Вид транзакции', aggfunc='sum')
+print("\nСводная таблица (общие суммы по видам транзакций):")
+print(pivot)
+
+# ======================== Задание 7 ========================
+np.random.seed(42)
+df_med = pd.DataFrame({
     'Специальность': ['Терапевт', 'Терапевт', 'Хирург', 'Хирург'] * 6,
     'Врач': ['Иванов', 'Петров', 'Сидоров'] * 8,
     'Диагноз': ['Простуда', 'Простуда', 'Простуда', 'Ушиб', 'Ушиб', 'Простуда'] * 4,
@@ -43,12 +77,9 @@ df = pd.DataFrame({
     'Продолжительность': np.random.randint(1, 6, 24)
 })
 
-ct = pd.crosstab(df['Врач'], df['Диагноз'])
+print("\nМедицинская таблица:")
+print(df_med)
 
-print(df_concat)
-print(df_merge)
-print(prod_unique)
-print(agg_res)
-print(group_res)
-print(pivot)
-print(ct)
+contingency = pd.crosstab(df_med['Врач'], df_med['Диагноз'])
+print("\nТаблица сопряженности (абсолютные частоты диагнозов по врачам):")
+print(contingency)
